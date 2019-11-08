@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Product Order</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        table, td, th {
+            padding: 5px;
+            border: 1px solid grey;
+        }
+    </style>
+</head>
+
+<body>
+
+<div>
+    <a th:href="@{'/products'}">Products</a>&nbsp;
+    <a th:href="@{'/orders'}">Orders</a>&nbsp;
+    <hr>
+</div>
+
+<h2>
+    Add order for <span th:text="${productName}"></span>
+</h2>
+
+<form th:action="@{/orders}" th:object="${newOrder}" method="post">
+    <input type="hidden" id="id" name="id" th:field="*{productId}"/>
+    <label for="amount">Amount</label><br>
+    <input id="amount" name="minimumStock" type="number" th:field="*{amount}"/><br/>
+    <br/>
+    <br/>
+    <input type="submit" value="Save"/>
+</form>
+
+</body>
+</html>

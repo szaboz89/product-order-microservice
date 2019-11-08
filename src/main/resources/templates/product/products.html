@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Product Order</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        table, td, th {
+            padding: 5px;
+            border: 1px solid grey;
+        }
+    </style>
+</head>
+
+<body>
+
+<div>
+    <a th:href="@{'/products'}">Products</a>&nbsp;
+    <a th:href="@{'/orders'}">Orders</a>&nbsp;
+    <hr>
+</div>
+
+<h2>
+    Products
+</h2>
+
+<table>
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Price</th>
+        <th>Available</th>
+        <th>Options</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="product: ${products}">
+        <td th:text="${product.id}">Id</td>
+        <td th:text="${product.name}">Name</td>
+        <td th:text="${product.description}">Description</td>
+        <td th:text="${product.price}">Price</td>
+        <td th:text="${product.available != null ? product.available : 'Not available'}">Available</td>
+        <td>
+            <a th:href="@{'/products/' + ${product.id} + '/order/' + ${product.name}}">
+                Make an order
+            </a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

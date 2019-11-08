@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Product Order</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        table, td, th {
+            padding: 5px;
+            border: 1px solid grey;
+        }
+    </style>
+</head>
+
+<body>
+
+<div>
+    <a th:href="@{'/products'}">Products</a>&nbsp;
+    <a th:href="@{'/orders'}">Orders</a>&nbsp;
+    <hr>
+</div>
+
+<h2>
+    Orders
+</h2>
+
+<table>
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Product Id</th>
+        <th>Product Name</th>
+        <th>Amount</th>
+        <th>Options</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="order: ${orders}">
+        <td th:text="${order.id}">Id</td>
+        <td th:text="${order.productId}">Product Id</td>
+        <td th:text="${order.productName}">Product name</td>
+        <td th:text="${order.amount}">Amount</td>
+        <td>
+            <a th:href="@{'/orders/' + ${order.id} + '/delete'}"
+               onclick="return confirm('Are you sure you want to delete?')">
+                Delete
+            </a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

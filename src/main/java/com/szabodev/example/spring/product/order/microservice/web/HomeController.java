@@ -1,8 +1,11 @@
 package com.szabodev.example.spring.product.order.microservice.web;
 
+import com.szabodev.example.spring.product.order.microservice.dto.OrderRequestDTO;
+import com.szabodev.example.spring.product.order.microservice.dto.OrderResponseDTO;
 import com.szabodev.example.spring.product.order.microservice.dto.ProductOrderDTO;
 import com.szabodev.example.spring.product.order.microservice.service.ProductOrderService;
 import com.szabodev.example.spring.product.order.microservice.service.remote.ProductService;
+import com.szabodev.example.spring.product.order.microservice.service.remote.ProductStoreService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -27,6 +30,7 @@ public class HomeController {
 
     private final ProductService productService;
     private final ProductOrderService productOrderService;
+    private final ProductStoreService productStoreService;
 
     @GetMapping({"/", "/products"})
     public String products(Model model) {
@@ -48,17 +52,25 @@ public class HomeController {
     }
 
     @PostMapping("/orders")
-    public String saveOrder(@ModelAttribute(NEW_ORDER) ProductOrderDTO order) {
-        Optional<ProductOrderDTO> existingOrder = productOrderService.findByProductId(order.getProductId());
-        if (existingOrder.isPresent()) {
-            existingOrder.get().setAmount(existingOrder.get().getAmount() + order.getAmount());
-            ProductOrderDTO saved = productOrderService.save(existingOrder.get());
-            log.info("Order updated: {}", saved);
+    public String saveOrder(@ModelAttribute(NEW_ORDER) ProductOrderDTO order, Model model) {
+        OrderResponseDTO orderResponse = productStoreService.requestOrder(
+                OrderRequestDTO.builder().amount(order.getAmount()).productId(order.getProductId()).build()
+        );
+        if (orderResponse != null && "OK".equalsIgnoreCase(orderResponse.getStatus())) {
+            Optional<ProductOrderDTO> existingOrder = productOrderService.findByProductId(order.getProductId());
+            if (existingOrder.isPresent()) {
+                existingOrder.get().setAmount(existingOrder.get().getAmount() + order.getAmount());
+                ProductOrderDTO saved = productOrderService.save(existingOrder.get());
+                log.info("Order updated: {}", saved);
+            } else {
+                ProductOrderDTO saved = productOrderService.save(order);
+                log.info("Order saved: {}", saved);
+            }
+            return REDIRECT_PRODUCT_ORDERS;
         } else {
-            ProductOrderDTO saved = productOrderService.save(order);
-            log.info("Order saved: {}", saved);
+            model.addAttribute("errorMessage", "Cannot process order");
+            return products(model);
         }
-        return REDIRECT_PRODUCT_ORDERS;
     }
 
     @GetMapping("/orders/{id}/delete")

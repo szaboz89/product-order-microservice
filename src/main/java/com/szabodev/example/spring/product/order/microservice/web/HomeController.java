@@ -1,5 +1,6 @@
 package com.szabodev.example.spring.product.order.microservice.web;
 
+import com.szabodev.example.spring.product.order.microservice.dto.DeletedOrderDTO;
 import com.szabodev.example.spring.product.order.microservice.dto.OrderRequestDTO;
 import com.szabodev.example.spring.product.order.microservice.dto.OrderResponseDTO;
 import com.szabodev.example.spring.product.order.microservice.dto.ProductOrderDTO;
@@ -78,6 +79,7 @@ public class HomeController {
         productOrderService.findById(id).ifPresent(productOrder -> {
             log.info("Delete productOrder: {}", productOrder);
             productOrderService.deleteById(id);
+            productStoreService.orderDeleted(DeletedOrderDTO.builder().productId(productOrder.getProductId()).amount(productOrder.getAmount()).build());
         });
         return REDIRECT_PRODUCT_ORDERS;
     }

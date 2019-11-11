@@ -3,6 +3,7 @@ package com.szabodev.example.spring.product.order.microservice.service.remote;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.szabodev.example.spring.product.order.microservice.config.JmsConfig;
+import com.szabodev.example.spring.product.order.microservice.dto.DeletedOrderDTO;
 import com.szabodev.example.spring.product.order.microservice.dto.OrderRequestDTO;
 import com.szabodev.example.spring.product.order.microservice.dto.OrderResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -41,5 +42,11 @@ public class ProductStoreServiceImpl implements ProductStoreService {
             log.error("Something went wrong", e);
         }
         return null;
+    }
+
+    @Override
+    public void orderDeleted(DeletedOrderDTO deletedOrder) {
+        log.info("Sending deleted order info {} to {}", deletedOrder, JmsConfig.ORDER_REQUEST_QUEUE);
+        jmsTemplate.convertAndSend(JmsConfig.ORDER_DELETED_QUEUE, deletedOrder);
     }
 }

@@ -6,7 +6,6 @@ import com.szabodev.example.spring.product.order.microservice.repository.Product
 import com.szabodev.example.spring.product.order.microservice.service.mapper.ProductOrderMapper;
 import com.szabodev.example.spring.product.order.microservice.service.remote.ProductService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,9 +20,6 @@ public class ProductOrderServiceImpl implements ProductOrderService {
     private final ProductOrderMapper productOrderMapper;
 
     private final ProductService productService;
-
-    @Value("${book.microservice.apiUrl}")
-    private String apiUrl;
 
     @Override
     public Optional<ProductOrderDTO> findById(Long id) {
